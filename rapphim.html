@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rạp Đêm – Xem phim online</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#15111f;--sf:#211a30;--sf2:#2b2340;--tx:#f3eefb;--mu:#a79bc0;--ac:#f6b73c;--ac2:#ff6b81;--r:14px;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:var(--sf2);padding:.55rem .95rem;border-radius:999px;transition:.15s}
+button:hover{background:#3a2f55}
+button:focus-visible,input:focus-visible,select:focus-visible,.card:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.pri{background:var(--ac);color:#241a05;font-weight:700}.pri:hover{background:#ffc95a}
+input,select{background:var(--sf);border:1px solid #3a2f55;border-radius:10px;padding:.6rem .8rem;width:100%}
+header{position:sticky;top:0;z-index:20;background:rgba(21,17,31,.9);backdrop-filter:blur(12px);border-bottom:1px solid #2b2340}
+.bar{max-width:1240px;margin:auto;padding:.7rem 1rem;display:flex;gap:.7rem;align-items:center;flex-wrap:wrap}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em}.logo b{color:var(--ac)}
+nav{display:flex;gap:.3rem;flex-wrap:wrap}nav button{background:none}nav button.on{background:var(--sf2);color:var(--ac)}
+.sp{flex:1}
+.search{max-width:260px}
+.av{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--ac2);display:grid;place-items:center;font-weight:800;color:#2a0b12;padding:0}
+main{max-width:1240px;margin:auto;padding:1rem}
+h2{font-size:1.25rem;margin:1.2rem 0 .8rem}
+.hero{border-radius:20px;background:linear-gradient(110deg,#15111f 30%,rgba(21,17,31,.2)),var(--img) center/cover;padding:2.2rem 1.5rem;min-height:260px;display:flex;flex-direction:column;justify-content:flex-end;gap:.6rem}
+.hero h1{font-size:clamp(1.6rem,4vw,2.6rem);max-width:600px;letter-spacing:-.02em}
+.hero p{color:var(--mu)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}
+.card{background:var(--sf);border-radius:var(--r);overflow:hidden;cursor:pointer;position:relative}
+.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:var(--sf2)}
+.card:hover img{filter:brightness(1.12)}
+.card div{padding:.5rem .6rem;font-size:.85rem;line-height:1.3}.card small{color:var(--mu);display:block}
+.tag{position:absolute;top:.4rem;left:.4rem;background:var(--ac);color:#241a05;font-size:.7rem;font-weight:700;padding:.1rem .5rem;border-radius:99px}
+.prog{height:3px;background:var(--ac);position:absolute;left:0;bottom:0}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap}.chips button{font-size:.85rem;padding:.35rem .8rem}.chips button.on{background:var(--ac);color:#241a05}
+.pager{display:flex;gap:.6rem;justify-content:center;align-items:center;margin:1.5rem 0}
+.msg{background:var(--sf);border-radius:var(--r);padding:1.2rem;color:var(--mu);text-align:center;line-height:1.6}
+.msg code{color:var(--ac)}
+dialog{border:0;border-radius:20px;background:var(--sf);color:var(--tx);padding:1.4rem;width:min(94vw,440px);max-height:90vh}
+dialog::backdrop{background:rgba(5,3,10,.7)}
+dialog.wide{width:min(96vw,980px)}
+dialog label{display:block;margin:.8rem 0 .3rem;color:var(--mu);font-size:.85rem}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+.err{color:var(--ac2);font-size:.85rem;margin-top:.6rem;min-height:1em}
+.player{aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+.player iframe,.player video{width:100%;height:100%;border:0}
+.eps{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem;max-height:150px;overflow:auto}
+.eps button{font-size:.8rem;padding:.3rem .7rem}.eps button.on{background:var(--ac);color:#241a05}
+.info{display:flex;gap:1rem;margin-top:1rem}.info img{width:110px;border-radius:10px;align-self:flex-start}
+.info p{color:var(--mu);font-size:.9rem;line-height:1.55;max-height:130px;overflow:auto}
+.menu{position:absolute;right:1rem;top:56px;background:var(--sf);border:1px solid #3a2f55;border-radius:var(--r);padding:.5rem;display:none;flex-direction:column;min-width:200px;z-index:30}
+.menu.open{display:flex}.menu button{background:none;text-align:left;border-radius:8px}.menu button:hover{background:var(--sf2)}
+.menu span{padding:.5rem .95rem;color:var(--mu);font-size:.85rem}
+.toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--ac);color:#241a05;padding:.6rem 1.1rem;border-radius:99px;font-weight:700;display:none;z-index:99}
+@media(max-width:640px){.search{max-width:none;flex:1 1 100%;order:5}.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}.info img{width:80px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="logo">Rạp<b>Đêm</b></div>
+  <nav id="nav"></nav><div class="sp"></div>
+  <input class="search" id="q" type="search" placeholder="Tìm tên phim…" aria-label="Tìm phim">
+  <button id="apiBtn" title="Cấu hình API">⚙ API</button>
+  <button id="userBtn" class="pri">Đăng nhập</button>
+  <div class="menu" id="menu"></div>
+</div></header>
+<main id="app"></main>
+
+<dialog id="dApi"><h3>Nguồn dữ liệu (API)</h3>
+  <label for="apiIn">Địa chỉ API gốc</label><input id="apiIn" placeholder="https://ophim1.com">
+  <label for="imgIn">Địa chỉ ảnh (để trống nếu API tự trả về)</label><input id="imgIn" placeholder="https://img.ophim.live/uploads/movies/">
+  <p style="color:var(--mu);font-size:.8rem;margin-top:.7rem;line-height:1.5">Hỗ trợ API dạng OPhim: <code>/v1/api/danh-sach/phim-le</code>, <code>/v1/api/the-loai</code>, <code>/phim/{slug}</code>.</p>
+  <div class="row"><button class="pri" id="apiSave">Lưu và tải lại</button><button data-close>Đóng</button></div></dialog>
+
+<dialog id="dAuth"><h3 id="aTitle">Đăng nhập</h3>
+  <label for="aU">Tên đăng nhập</label><input id="aU" autocomplete="username">
+  <label for="aP">Mật khẩu</label><input id="aP" type="password" autocomplete="current-password">
+  <div id="aAv" hidden><label for="aF">Ảnh đại diện (không bắt buộc)</label><input id="aF" type="file" accept="image/*"></div>
+  <div class="err" id="aE"></div>
+  <div class="row"><button class="pri" id="aGo">Đăng nhập</button><button id="aSw">Chưa có tài khoản? Đăng ký</button><button data-close>Đóng</button></div></dialog>
+
+<dialog id="dProf"><h3>Hồ sơ</h3>
+  <label for="pF">Đổi ảnh đại diện</label><input id="pF" type="file" accept="image/*">
+  <div class="row"><button id="pOut">Đăng xuất</button><button data-close>Đóng</button></div></dialog>
+
+<dialog id="dMov" class="wide"><div id="mov"></div><div class="row"><button data-close>Đóng</button></div></dialog>
+<input type="file" id="imp" accept=".json" hidden>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const LS={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const TABS=[['home','Trang chủ'],['phim-bo','Phim bộ'],['phim-le','Phim lẻ'],['hoat-hinh','Hoạt hình'],['the-loai','Thể loại'],['history','Lịch sử'],['fav','Yêu thích']];
+const S={tab:'home',page:1,genre:null,kw:'',cfg:LS.get('cfg',{api:'https://ophim1.com',img:''}),user:LS.get('session',null),cdn:''};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2200)}
+
+/* ---------- Tài khoản & dữ liệu theo người dùng ---------- */
+const users=()=>LS.get('users',{});
+const hash=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+const data=()=>S.user?LS.get('data:'+S.user,{history:[],fav:[]}):LS.get('data:guest',{history:[],fav:[]});
+const save=d=>LS.set('data:'+(S.user||'guest'),d);
+function resize(file,size=96){return new Promise(res=>{if(!file)return res('');const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const c=document.createElement('canvas');c.width=c.height=size;const m=Math.min(i.width,i.height);c.getContext('2d').drawImage(i,(i.width-m)/2,(i.height-m)/2,m,m,0,0,size,size);res(c.toDataURL('image/jpeg',.8))};i.onerror=()=>res('');i.src=r.result};r.readAsDataURL(file)})}
+let regMode=false;
+function authMode(r){regMode=r;$('#aTitle').textContent=r?'Đăng ký':'Đăng nhập';$('#aGo').textContent=r?'Tạo tài khoản':'Đăng nhập';$('#aSw').textContent=r?'Đã có tài khoản? Đăng nhập':'Chưa có tài khoản? Đăng ký';$('#aAv').hidden=!r;$('#aE').textContent=''}
+$('#aSw').onclick=()=>authMode(!regMode);
+$('#aGo').onclick=async()=>{
+  const u=$('#aU').value.trim().toLowerCase(),p=$('#aP').value,us=users();
+  if(u.length<3||p.length<4)return $('#aE').textContent='Tên tối thiểu 3 ký tự, mật khẩu tối thiểu 4 ký tự.';
+  if(regMode){
+    if(us[u])return $('#aE').textContent='Tên đăng nhập đã được dùng.';
+    us[u]={pw:await hash(p),avatar:await resize($('#aF').files[0])};LS.set('users',us);
+  }else if(!us[u]||us[u].pw!==await hash(p))return $('#aE').textContent='Sai tên đăng nhập hoặc mật khẩu.';
+  S.user=u;LS.set('session',u);$('#dAuth').close();$('#aP').value='';toast('Xin chào '+u);renderUser();route();
+};
+$('#pF').onchange=async e=>{const us=users();us[S.user].avatar=await resize(e.target.files[0]);LS.set('users',us);renderUser();toast('Đã đổi ảnh')};
+$('#pOut').onclick=()=>{S.user=null;LS.set('session',null);$('#dProf').close();renderUser();route()};
+function renderUser(){
+  const b=$('#userBtn'),m=$('#menu');m.classList.remove('open');
+  if(!S.user){b.className='pri';b.textContent='Đăng nhập';b.innerHTML='Đăng nhập';m.innerHTML='';return}
+  const a=(users()[S.user]||{}).avatar;b.className='av';b.title=S.user;
+  b.innerHTML=a?`<img class="av" src="${a}" alt="${esc(S.user)}">`:esc(S.user[0].toUpperCase());
+  m.innerHTML=`<span>${esc(S.user)}</span><button data-a="prof">Hồ sơ & ảnh đại diện</button><button data-a="exp">Sao lưu (tải file)</button><button data-a="imp">Khôi phục từ file</button><button data-a="out">Đăng xuất</button>`;
+}
+$('#userBtn').onclick=()=>{if(S.user)$('#menu').classList.toggle('open');else{authMode(false);$('#dAuth').showModal()}};
+$('#menu').onclick=e=>{const a=e.target.dataset.a;if(!a)return;$('#menu').classList.remove('open');
+  if(a==='prof')$('#dProf').showModal();
+  if(a==='out')$('#pOut').click();
+  if(a==='imp')$('#imp').click();
+  if(a==='exp'){const blob=new Blob([JSON.stringify({v:1,user:S.user,avatar:(users()[S.user]||{}).avatar||'',...data()})],{type:'application/json'});const l=document.createElement('a');l.href=URL.createObjectURL(blob);l.download=`rapdem-${S.user}.json`;l.click();toast('Đã tạo file sao lưu')}};
+$('#imp').onchange=async e=>{try{const j=JSON.parse(await e.target.files[0].text());if(!Array.isArray(j.history))throw 0;save({history:j.history,fav:j.fav||[]});toast('Đã khôi phục '+j.history.length+' mục lịch sử');route()}catch{toast('File sao lưu không hợp lệ')}e.target.value=''};
+document.addEventListener('click',e=>{if(!e.target.closest('#menu,#userBtn'))$('#menu').classList.remove('open')});
+
+/* ---------- API ---------- */
+async function api(path){
+  const base=S.cfg.api.replace(/\/$/,'');
+  const r=await fetch(base+path);if(!r.ok)throw new Error('HTTP '+r.status);return r.json();
+}
+function norm(j){
+  const d=j.data||j;const items=d.items||j.items||j.movies||[];
+  S.cdn=d.APP_DOMAIN_CDN_IMAGE||S.cdn;
+  return{items,pages:(d.params&&d.params.pagination&&Math.ceil(d.params.pagination.totalItems/d.params.pagination.totalItemsPerPage))||(j.pagination&&j.pagination.totalPages)||null};
+}
+function img(u){if(!u)return'';if(/^https?:/.test(u))return u;const b=S.cfg.img||((S.cdn||S.cfg.api)+'/uploads/movies/');return b.replace(/\/?$/,'/')+u.replace(/^\//,'')}
+const listPath={'home':p=>`/v1/api/danh-sach/phim-moi?page=${p}`,'phim-bo':p=>`/v1/api/danh-sach/phim-bo?page=${p}`,'phim-le':p=>`/v1/api/danh-sach/phim-le?page=${p}`,'hoat-hinh':p=>`/v1/api/danh-sach/hoat-hinh?page=${p}`};
+async function fetchList(){
+  if(S.kw)return norm(await api(`/v1/api/tim-kiem?keyword=${encodeURIComponent(S.kw)}&page=${S.page}`));
+  if(S.tab==='the-loai'&&S.genre)return norm(await api(`/v1/api/the-loai/${S.genre}?page=${S.page}`));
+  if(S.tab==='home'){try{return norm(await api(listPath.home(S.page)))}catch{return norm(await api(`/danh-sach/phim-moi-cap-nhat?page=${S.page}`))}}
+  return norm(await api(listPath[S.tab](S.page)));
+}
+
+/* ---------- Giao diện ---------- */
+function cardHtml(m,extra=''){
+  const slug=m.slug,t=m.thumb_url||m.poster_url||m.thumb||'';
+  return `<div class="card" tabindex="0" data-slug="${esc(slug)}" role="button">${m.episode_current||extra?`<span class="tag">${esc(extra||m.episode_current)}</span>`:''}<img loading="lazy" src="${esc(img(t))}" alt="${esc(m.name)}"><div>${esc(m.name)}<small>${esc(m.origin_name||'')} ${m.year?'· '+esc(m.year):''}</small></div>${m._p?`<span class="prog" style="width:${m._p}%"></span>`:''}</div>`;
+}
+function nav(){$('#nav').innerHTML=TABS.map(([k,n])=>`<button data-t="${k}" class="${S.tab===k&&!S.kw?'on':''}">${n}</button>`).join('')}
+$('#nav').onclick=e=>{const t=e.target.dataset.t;if(!t)return;S.tab=t;S.page=1;S.genre=null;S.kw='';$('#q').value='';route()};
+let st;$('#q').oninput=e=>{clearTimeout(st);st=setTimeout(()=>{S.kw=e.target.value.trim();S.page=1;route()},450)};
+$('#app').onclick=e=>{
+  const c=e.target.closest('.card');if(c)return openMovie(c.dataset.slug);
+  const g=e.target.closest('[data-g]');if(g){S.genre=g.dataset.g;S.page=1;route()}
+  const p=e.target.closest('[data-p]');if(p){S.page=Math.max(1,S.page+ +p.dataset.p);route();scrollTo(0,0)}
+};
+$('#app').onkeydown=e=>{if(e.key==='Enter'&&e.target.classList.contains('card'))openMovie(e.target.dataset.slug)};
+function empty(t){return`<div class="msg">${t}</div>`}
+function apiErr(e){return empty(`Không tải được dữ liệu từ <code>${esc(S.cfg.api)}</code> (${esc(e.message)}).<br>Kiểm tra địa chỉ API ở nút <b>⚙ API</b>, kết nối mạng, hoặc API có cho phép CORS hay không.`)}
+async function route(){
+  nav();const app=$('#app');
+  if(S.tab==='history'||S.tab==='fav'){
+    const d=data(),arr=S.tab==='history'?d.history:d.fav;
+    app.innerHTML=`<h2>${S.tab==='history'?'Lịch sử xem':'Phim yêu thích'}</h2>`+(arr.length?`<div class="grid">${arr.map(m=>cardHtml({...m,_p:m.dur?Math.min(100,m.t/m.dur*100):0},m.ep||'')).join('')}</div>`:empty(S.user?'Chưa có phim nào ở đây.':'Bạn đang dùng chế độ khách. Đăng nhập để lưu riêng cho từng tài khoản.'));return;
+  }
+  app.innerHTML=empty('Đang tải…');
+  try{
+    if(S.tab==='the-loai'&&!S.genre&&!S.kw){
+      const j=await api('/v1/api/the-loai');const it=(j.data&&j.data.items)||j.items||j||[];
+      app.innerHTML='<h2>Chọn thể loại</h2><div class="chips">'+it.map(g=>`<button data-g="${esc(g.slug)}">${esc(g.name)}</button>`).join('')+'</div>';return;
+    }
+    const {items,pages}=await fetchList();
+    const title=S.kw?`Kết quả cho “${esc(S.kw)}”`:S.tab==='the-loai'?`Thể loại: ${esc(S.genre)}`:(TABS.find(t=>t[0]===S.tab)||[])[1];
+    let hero='';
+    if(S.tab==='home'&&!S.kw&&S.page===1&&items[0]){const f=items[0];hero=`<div class="hero" style="--img:url('${esc(img(f.poster_url||f.thumb_url))}')"><h1>${esc(f.name)}</h1><p>${esc(f.origin_name||'')} ${f.year?'· '+esc(f.year):''}</p><div><button class="pri card" style="display:inline-block;aspect-ratio:auto;width:auto;padding:.6rem 1.2rem" data-slug="${esc(f.slug)}">▶ Xem ngay</button></div></div>`}
+    app.innerHTML=hero+`<h2>${title}</h2>`+(S.tab==='the-loai'?'<div class="chips" style="margin-bottom:1rem"><button data-g="">‹ Tất cả thể loại</button></div>':'')+(items.length?`<div class="grid">${items.map(m=>cardHtml(m)).join('')}</div>`:empty('Không có phim phù hợp.'))
+      +`<div class="pager"><button data-p="-1" ${S.page<2?'disabled':''}>‹ Trước</button><span>Trang ${S.page}${pages?' / '+pages:''}</span><button data-p="1" ${pages&&S.page>=pages?'disabled':''}>Sau ›</button></div>`;
+    if(S.tab==='the-loai'&&!S.genre){}
+  }catch(e){app.innerHTML=apiErr(e)}
+}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-g]');if(g&&g.dataset.g==='')S.genre=null});
+
+/* ---------- Xem phim ---------- */
+let cur=null;
+async function openMovie(slug){
+  const dlg=$('#dMov'),box=$('#mov');box.innerHTML=empty('Đang tải phim…');dlg.showModal();
+  try{
+    const j=await api('/phim/'+slug);const mv=j.movie||(j.data&&j.data.item)||{};
+    const eps=(j.episodes||(j.data&&j.data.item&&j.data.item.episodes)||[]);
+    if(!S.cdn&&j.data&&j.data.APP_DOMAIN_CDN_IMAGE)S.cdn=j.data.APP_DOMAIN_CDN_IMAGE;
+    cur={slug,mv,eps,sv:0,ep:0};
+    const saved=data().history.find(h=>h.slug===slug);if(saved){cur.sv=saved.sv||0;cur.ep=saved.epi||0}
+    drawMovie();
+  }catch(e){box.innerHTML=apiErr(e)}
+}
+function drawMovie(){
+  const {mv,eps,sv,ep}=cur,list=(eps[sv]&&eps[sv].server_data)||[],e=list[ep];
+  const fav=data().fav.some(f=>f.slug===cur.slug);
+  $('#mov').innerHTML=`<div class="player" id="pl"></div>
+  <h3 style="margin-top:.9rem">${esc(mv.name)} <small style="color:var(--mu);font-weight:400">${esc(mv.origin_name||'')}</small></h3>
+  ${eps.length>1?`<div class="chips" style="margin-top:.6rem">${eps.map((s,i)=>`<button data-sv="${i}" class="${i===sv?'on':''}">${esc(s.server_name)}</button>`).join('')}</div>`:''}
+  <div class="eps">${list.map((x,i)=>`<button data-ep="${i}" class="${i===ep?'on':''}">${esc(x.name)}</button>`).join('')}</div>
+  <div class="info"><img src="${esc(img(mv.thumb_url||mv.poster_url))}" alt=""><div><p>${esc((mv.content||'').replace(/<[^>]+>/g,''))}</p><div class="row"><button id="favB">${fav?'♥ Đã yêu thích':'♡ Yêu thích'}</button></div></div></div>`;
+  const pl=$('#pl');
+  if(!e){pl.innerHTML='<div class="msg" style="height:100%;display:grid;place-items:center">Chưa có tập phim nào.</div>';return}
+  if(e.link_m3u8){
+    pl.innerHTML='<video controls autoplay playsinline></video>';const v=pl.firstChild;
+    const go=()=>{if(window.Hls&&Hls.isSupported()){const h=new Hls();h.loadSource(e.link_m3u8);h.attachMedia(v)}else v.src=e.link_m3u8};
+    if(window.Hls||v.canPlayType('application/vnd.apple.mpegurl'))go();else{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.7/hls.min.js';s.onload=go;document.head.appendChild(s)}
+    v.addEventListener('timeupdate',()=>{if(!v._l||Date.now()-v._l>5000){v._l=Date.now();log(v.currentTime,v.duration)}});
+    if(cur.resume){v.currentTime=cur.resume}
+  }else pl.innerHTML=`<iframe src="${esc(e.link_embed)}" allowfullscreen allow="autoplay; fullscreen"></iframe>`;
+  log(0,0);
+}
+function log(t,dur){
+  const d=data(),{mv,slug,sv,ep,eps}=cur,name=(eps[sv].server_data[ep]||{}).name||'';
+  d.history=d.history.filter(h=>h.slug!==slug);
+  d.history.unshift({slug,name:mv.name,origin_name:mv.origin_name,year:mv.year,thumb_url:img(mv.thumb_url||mv.poster_url),sv,epi:ep,ep:name?'Tập '+name.replace(/^tập\s*/i,''):'',t,dur,at:Date.now()});
+  d.history=d.history.slice(0,100);save(d);
+}
+$('#mov').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.sv!==undefined){cur.sv=+b.dataset.sv;cur.ep=0;drawMovie()}
+  if(b.dataset.ep!==undefined){cur.ep=+b.dataset.ep;drawMovie()}
+  if(b.id==='favB'){const d=data(),i=d.fav.findIndex(f=>f.slug===cur.slug);if(i>=0)d.fav.splice(i,1);else d.fav.unshift({slug:cur.slug,name:cur.mv.name,origin_name:cur.mv.origin_name,year:cur.mv.year,thumb_url:img(cur.mv.thumb_url||cur.mv.poster_url)});save(d);drawMovie()}
+};
+$('#dMov').addEventListener('close',()=>{$('#mov').innerHTML='';if(S.tab==='history')route()});
+
+/* ---------- Cấu hình & khởi động ---------- */
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+$('#apiBtn').onclick=()=>{$('#apiIn').value=S.cfg.api;$('#imgIn').value=S.cfg.img;$('#dApi').showModal()};
+$('#apiSave').onclick=()=>{const a=$('#apiIn').value.trim();if(!/^https?:\/\//.test(a))return toast('API phải bắt đầu bằng http(s)://');S.cfg={api:a,img:$('#imgIn').value.trim()};LS.set('cfg',S.cfg);S.cdn='';$('#dApi').close();route()};
+if(S.user&&!users()[S.user])S.user=null;
+renderUser();route();
+</script>
+</body>
+</html>
